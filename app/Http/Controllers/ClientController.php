@@ -36,15 +36,14 @@ class ClientController extends Controller
      */
     public function store(StoreClientRequest $request)
     {
-        dd($request->all());
+        $file = $request->file('curriculo')->store('curriculos');
         $client_request = $request->all();
         $client_request['ip'] = $request->ip();
+        $client_request['curriculo_url'] = $file;
         $address_request = $request->address;
         unset($client_request['address']);
-        // dd($address_request);
         $client = Client::create($client_request);
         $address = $client->addresses()->create($address_request);
-        dd($address);
     }
 
     /**

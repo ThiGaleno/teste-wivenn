@@ -100,10 +100,16 @@
 
         $('form').submit(function(e){
             e.preventDefault();
-            const data = $('form').serialize();
+            const form = $('form')[0];
+            let data = new FormData(form);
+            console.log(data.get('curriculo')) // formData ta pegando o formulario certinho
             $.ajax({
-                url: "api/client",
+                url: "{{ route('client.store') }}",
+                type: 'post',
+                processData: false,
+                contentType: false,
                 data: data,
+                dataType: 'json',
                 success: function(data){
                     console.log(data);
                 }
