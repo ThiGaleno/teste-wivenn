@@ -21,7 +21,7 @@
                 </div>
                 <div class="form-group col-md-4">
                     <label class="text-danger" for="email">E-mail </label>
-                    <input name="email" class="form-control" id="email" value="thiagogaleno1301@hotmail.com" type="email">
+                    <input name="email" class="form-control" id="email" type="email">
                 </div>
                 <div class="form-group col-md-4">
                     <label class="text-danger" for="phone">Telefone </label>
@@ -37,6 +37,7 @@
                 <div class="form-group col-md-4">
                     <label class="text-danger" for="state">Estado </label>
                     <select class="form-control" name="address[state]" id="state">
+                        <option value="">Selecionar</option>
                         @foreach(arrayStates() as $key => $state)
                         <option value="{{ $key }}">{{ $state }}</option>
                         @endforeach

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreClientRequest;
 use App\Models\Client;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\newClient;
 
 class ClientController extends Controller
 {
@@ -13,27 +15,7 @@ class ClientController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
-        //
-    }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(StoreClientRequest $request)
     {
         $file = $request->file('curriculo')->store('curriculos');
@@ -42,52 +24,26 @@ class ClientController extends Controller
         $client_request['curriculo_url'] = $file;
         $address_request = $request->address;
         unset($client_request['address']);
+
         $client = Client::create($client_request);
-        $address = $client->addresses()->create($address_request);
+        if($client){
+            $address = $client->addresses()->create($address_request);
+            $this->sendEmail($client_request);
+            return response()->json([
+                'message' => 'Usuário cadastrado com sucesso!',
+                'status' => 200,
+            ]);
+        }else{
+            return response()->json([
+                'message' => 'Ops, algo deu errado, tente novamente mais tarde.',
+                'status' => 500,
+            ]);
+        }
+
+
+    }
+    public function sendEmail($client_request){
+        return Mail::to($client_request['email'])->send(new newClient($client_request));
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Client  $client
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Client $client)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Client  $client
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Client $client)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Client  $client
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Client $client)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Client  $client
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Client $client)
-    {
-        //
-    }
 }
